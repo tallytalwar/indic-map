@@ -896,7 +896,9 @@
                 if (defaultpos && typeof camera.position != "undefined") {
                     map_start_location = [camera.position[1], camera.position[0], camera.position[2]]
                 }
-                map.setView([map_start_location[0], map_start_location[1]], map_start_location[2]);
+
+                // Starting position
+                map.setView([23.3, 80], 5.1);
 
                 if (!inIframe()) {
                     addGUI();

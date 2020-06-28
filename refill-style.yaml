@@ -21,7 +21,7 @@ global:
     sdk_api_key: ''     # set this value to your Mapzen API key
 
     #ux/ui
-    ux_language: false             # l10n language code, trusting OSM in v0.10 tiles, fixed in v1.0 tiles
+    ux_language: 'ml'             # l10n language code, trusting OSM in v0.10 tiles, fixed in v1.0 tiles
     ux_language_fallback: false    # l10n language code, trusting OSM in v0.10 tiles, fixed in v1.0 tiles
     ux_language_text_source: |
         function() {
@@ -253,6 +253,11 @@ textures:
         filtering: mipmap
 
 sources:
+    mapbox:  # Custom OSM India
+        type: MVT
+        url: 'https://b.tiles.mapbox.com/v4/mapbox.mapbox-streets-v8/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoicGxhbmVtYWQiLCJhIjoiemdYSVVLRSJ9.g3lbg_eN0kztmsfIPxa9MQ'
+        tile_size: 256
+        max_zoom: 16
     mapzen:
         type: MVT #GeoJSON, MVT, TopoJSON
         # prod
@@ -1147,37 +1152,18 @@ layers:
                         stroke: { color: global.text_stroke, width: 4px }
 
 
+
     water:
-        data: { source: mapzen, layer: water }
+        data: { source: mapbox, layer: water }
         draw:
             polygons:
                 style: waves
                 visible: false
                 order: global.feature_order
-                color: [[0, global.lightest_color], [12, global.lighter_color]]
+                color: 'red'
 
         lakes:
-            filter:
-                all:
-                    - kind: [ocean, lake, water, riverbank, reservoir, swimming_pool]
-                any:
-                    # limit show smaller landuse areas to higher zooms
-                    - { $zoom: [1],  area: { min: 10000000000 } }
-                    - { $zoom: [2],  area: { min: 7000000000 } }
-                    # some weird natural earth scale set transition
-                    - { $zoom: [3],  area: { min: 5000000000 } }
-                    - { $zoom: [4],  area: { min: 300000000 } }
-                    - { $zoom: [5],  area: { min: 50000000 } }
-                    - { $zoom: [6],  area: { min: 50000000 } }
-                    - { $zoom: [7],  area: { min: 50000000 } }
-                    - { $zoom: [8],  area: { min: 50000000 } }
-                    - { $zoom: [9],  area: { min: 15000000 } }
-                    - { $zoom: [10], area: { min: 4000000 } }
-                    - { $zoom: [11], area: { min: 1000000 } }
-                    - { $zoom: [12], area: { min: 250000 } }
-                    - { $zoom: [13], area: { min: 150000 } }
-                    - { $zoom: [14], area: { min: 40000 } }
-                    - { $zoom: { min: 15 } }
+           
             draw:
                 polygons:
                     style: waves
@@ -2709,7 +2695,12 @@ layers:
                     lines:
                         color: global.white_color
                         width: [[14,0px],[15,0.5px],[18,2px]]
-
+    water_mb:
+        data: { source: mapbox, layer: water }
+        draw:
+            polygons:
+                order: 2
+                color: 'red'
     buildings:
         data: { source: mapzen, layer: buildings }
         filter:
