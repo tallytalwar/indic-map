@@ -420,14 +420,14 @@
                 tg_global['ux_language'] = value;
                 scene.config.global.ux_language = tg_global['ux_language'];
                 scene.updateConfig();
-                //window.location.search = 'language=' + value;
+                // window.location.search = 'language=' + value;
             });
             gui.fallback_lang = query.language_fallback || false;
             gui.fallback_button = gui.add(gui, 'fallback_lang', langs).onChange(function(value) {
                 tg_global['ux_language_fallback'] = value;
                 scene.config.global.ux_language_fallback = tg_global['ux_language_fallback'];
                 scene.updateConfig();
-                //window.location.search = 'language=' + value;
+                // window.location.search = 'language=' + value;
             });
             gui.fallback_button.name('lang fallback');
 
