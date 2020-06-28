@@ -246,10 +246,6 @@
         // prod
         var sdk_api_key = 'WNbrMJ83QBuRm4xvbrmFqg';
 
-        if( dev_or_prod == 'dev' ) {
-            sdk_api_key = '1YJOees7QwmlS0uYDTc8zg';
-        }
-
         var tg_global = { 'sdk_api_key': sdk_api_key, 'sdk_bathymetry': false, 'sdk_coastline': true };
 
         var layer = Tangram.leafletLayer({
@@ -388,9 +384,6 @@
             var tileCoords = { x : long2tile(latlng.lng,zoom), y: lat2tile(latlng.lat,zoom), z: zoom };
 
             var url = 'http://tile.';
-            if( dev_or_prod == 'dev' ) {
-                url += 'dev.';
-            }
             url += 'nextzen.org/tilezen/vector/v1/all/' + zoom + '/' + tileCoords.x  + '/' + tileCoords.y + '.topojson' + '?api_key=' + sdk_api_key;
             return url;
         }
@@ -407,23 +400,19 @@
             // Language selector
             var langs = {
                 '(default)': false,
-                'العربية (Arabic)': 'ar',
-                '中文 (Chinese)': 'zh',
-                'English': 'en',
-                'français (French)': 'fr',
-                'Русский (Russian)': 'ru',
-                'español (Spanish)': 'es',
-                'বাংলা (Bengali)': 'bn',
-                'Deutsch (German)': 'de',
-                'ελληνικά (Greek)': 'el',
-                'हिन्दी (Hindi)': 'hi',
-                'Bahasa Indonesia (Indonesian)': 'id',
-                'italiano (Italian)': 'it',
-                '日本語 (Japanese)': 'ja',
-                '한국어 (Korean)': 'ko',
-                'Português (Portuguese)': 'pt',
-                'Türkçe (Turkish)': 'tr',
-                'Tiếng Việt (Vietnamese)': 'vi'
+                'English':'en',
+                'Hindi हिन्दी':'hi',
+                'Marathi मराठी':'mr',
+                'Gujarati ગુજરાતી':'gu',
+                'Urdu اُردُو':'ur',
+                'Punjabi ਪੰਜਾਬੀ / پنجابی':'pa',
+                'Assamese অসমীয়া':'as',
+                'Bengali বাংলা':'bn',
+                'Oriya ଓଡ଼ିଆ':'or',
+                'Telugu తెలుగు':'te',
+                'Kannada ಕನ್ನಡ':'kn',
+                'Tamil தமிழ்':'ta',
+                'Malayalam മലയാളം':'ml'
             };
             // use query language, else default to English
             gui.language = query.language || false;
@@ -898,7 +887,7 @@
                 }
 
                 // Starting position
-                map.setView([23.3, 80], 5.1);
+                map.setView([23.3, 82], 5.1);
 
                 if (!inIframe()) {
                     addGUI();
