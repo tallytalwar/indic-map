@@ -20,9 +20,14 @@ global:
     # https://mapzen.com/documentation/overview/#developer-accounts-and-api-keys
     sdk_api_key: 'WNbrMJ83QBuRm4xvbrmFqg'     # set this value to your Mapzen API key
 
+
+    
+
     #ux/ui
+
+    #language
     ux_language: hi            # l10n language code, trusting OSM in v0.10 tiles, fixed in v1.0 tiles
-    ux_language_fallback: null    # l10n language code, trusting OSM in v0.10 tiles, fixed in v1.0 tiles
+    ux_language_fallback: en    # l10n language code, trusting OSM in v0.10 tiles, fixed in v1.0 tiles
     ux_language_text_source: |
         function() {
             // if a ux_langauge has been defined use that, else if there is feature name in the fallback_ux_language then use that, else use the feature's default name in the local language
@@ -153,6 +158,89 @@ global:
                 return name + '\n' + feature.addr_housenumber;
             } else {
                 return name;
+            }
+        }
+
+    # India disputed boundary fix
+    # Reference: https://github.com/tangrams/bubble-wrap
+    ux_point_of_view: in                 # 2-char ISO country code (generally)
+    ux_point_of_view_fallback: false        # 2-char ISO country code (generally)
+
+    ux_point_of_view_kind: |
+        function(feature) { return (global.ux_point_of_view && feature['kind:'+global.ux_point_of_view]) || (global.ux_point_of_view_fallback && feature['kind:'+global.ux_point_of_view_fallback]) || feature.kind }
+    ux_point_of_view_kind_filter_country: |
+        function() {
+            // if a ux_point_of_view has been defined use that, else fallback POV, else use the feature's default kind
+            var kind = global.ux_point_of_view_kind(feature);
+            switch( kind ) {
+                case( 'country' ):
+                case( 'indefinite' ):
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    ux_point_of_view_kind_filter_disputed_etc: |
+        function() {
+            // if a ux_point_of_view has been defined use that, else fallback POV, else use the feature's default kind
+            var kind = global.ux_point_of_view_kind(feature);
+            switch( kind ) {
+                case( 'disputed' ):
+                case( 'indeterminate' ):
+                case( 'lease_limit' ):
+                case( 'line_of_control' ):
+                case( 'overlay_limit' ):
+                case( 'disputed_breakaway' ):
+                case( 'disputed_claim' ):
+                case( 'disputed_elusive' ):
+                case( 'disputed_reference_line' ):
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    ux_point_of_view_kind_filter_disputed_star: |
+        function() {
+            // if a ux_point_of_view has been defined use that, else fallback POV, else use the feature's default kind
+            var kind = global.ux_point_of_view_kind(feature);
+            switch( kind ) {
+                case( 'disputed' ):
+                case( 'line_of_control' ):
+                case( 'disputed_breakaway' ):
+                case( 'disputed_claim' ):
+                case( 'disputed_elusive' ):
+                case( 'disputed_reference_line' ):
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    ux_point_of_view_kind_filter_unrecognized: |
+        function() {
+            // if a ux_point_of_view has been defined use that, else fallback POV, else use the feature's default kind
+            var kind = global.ux_point_of_view_kind(feature);
+            switch( kind ) {
+                case( 'unrecognized' ):
+                    return true;
+                case( 'unrecognized_country' ):
+                    return true;
+                case( 'unrecognized_region' ):
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    ux_point_of_view_kind_filter_country_capital: |
+        function() {
+            // if a ux_point_of_view has been defined use that, else fallback POV, else use the feature's default country capital boolean
+            if (global.ux_point_of_view && feature['country_capital:'+global.ux_point_of_view] != null) {
+                return feature['country_capital:'+global.ux_point_of_view];
+            }
+            else if (global.ux_point_of_view_fallback && feature['country_capital:'+global.ux_point_of_view_fallback] != null) {
+                return feature['country_capital:'+global.ux_point_of_view_fallback];
+            }
+            else {
+                return feature.country_capital;
             }
         }
 
@@ -2134,7 +2222,7 @@ layers:
                     text-blend-order:
                         priority: 59
                         visible: global.text_visible_minor_road
-                        text_source: name
+                        text_source: global.ux_language_text_source_road_ref_and_name
                         font:
                             fill: [[15, global.mid_color], [18, global.black_color]]
                             size: [[15, 10px], [18, 13px]]
@@ -2869,8 +2957,7 @@ layers:
         country:
             filter:
                 any:
-                    - kind: country
-                    - admin_level: 2
+                    - global.ux_point_of_view_kind_filter_country
             draw:
                 country-outerline:
                     style: lines
@@ -2909,15 +2996,17 @@ layers:
                             offset: 0px
 
         other_country_boundary_disputed_etc:
-            filter: { kind: [disputed, indefinite, indeterminate, lease_limit, line_of_control, overlay_limit] }
+            filter:
+                global.ux_point_of_view_kind_filter_disputed_etc
             draw:
-                lines:
-                    dash: [1.25, 1.25]
+                dashed:
+                    visible: true
                     order: global.feature_order
                     color: global.light_color
                     width: [[1,0.2px],[9,1.5px],[17,10m]]
             disputed:
-                filter: { kind: [disputed, line_of_control] }
+                filter:
+                    global.ux_point_of_view_kind_filter_disputed_star
                 draw:
                     lines:
                         dash: [2.0, 1.0]
@@ -4925,3 +5014,5 @@ layers:
 #                # but give them all the same outline
 #                outline:
 #                    order: 487
+
+
