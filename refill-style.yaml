@@ -341,6 +341,10 @@ textures:
         filtering: mipmap
 
 sources:
+    wikidata:
+        type: MVT
+        url: https://b.tiles.mapbox.com/v4/planemad.6mk61jbn/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoicGxhbmVtYWQiLCJhIjoiemdYSVVLRSJ9.g3lbg_eN0kztmsfIPxa9MQ
+        max_zoom: 0
     mapzen:
         type: MVT #GeoJSON, MVT, TopoJSON
         # prod
@@ -965,6 +969,20 @@ fonts:
 
 
 layers:
+    india-places-wikidata-62vv5y:
+        data: { source: wikidata }
+        draw:
+            text-blend-order:
+                collide: true
+                #text_source: function() { return "varun"; }
+                text_wrap: false
+                font:
+                    family: global.text_font_family
+                    size: [[1, 11px], [3, 14px]]
+                    style: italic
+                    fill: global.black_color
+                    weight: normal
+                    transform: uppercase
     # Map overlays for styling the server response (using special source layer names) for route line, current location, and search result pins
     mz_route_line:
         data: { source: mz_route_line }
