@@ -974,7 +974,7 @@ layers:
         draw:
             text-blend-order:
                 #collide: true
-                #text_source: function() { return "varun"; }
+                text_source: global.ux_language_text_source
                 text_wrap: false
                 font:
                     family: global.text_font_family
