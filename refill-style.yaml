@@ -973,7 +973,7 @@ layers:
         data: { source: wikidata }
         draw:
             text-blend-order:
-                collide: true
+                #collide: true
                 #text_source: function() { return "varun"; }
                 text_wrap: false
                 font:
